@@ -1,0 +1,33 @@
+/* Emergency Services API Custom Styling */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', sans-serif;
+}
+
+.navbar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.page-header {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white !important;
+    padding: 30px;
+    border-radius: 8px 8px 0 0;
+}
+
+pre {
+    background: #2d3748 !important;
+    color: #48bb78 !important;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.btn-primary {
+    background: #667eea;
+    border: none;
+}
+
+.wrapper {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    border-radius: 12px;
+}

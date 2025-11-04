@@ -1,0 +1,83 @@
+services:
+  postgis:
+    image: postgis/postgis:15-3.3
+    container_name: emergency_postgis
+    environment:
+      POSTGRES_DB: emergency_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - emergency_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: emergency_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: C22375093@mytudublin.ie
+      PGADMIN_DEFAULT_PASSWORD: C22375093
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "5050:80"
+    networks:
+      - emergency_network
+    depends_on:
+      - postgis
+
+  django:
+    build: ./backend
+    container_name: emergency_django
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py loaddata services/fixtures/initial_data.json &&
+             python create_superuser.py &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_NAME=emergency_db
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres123
+      - DATABASE_HOST=postgis
+      - DATABASE_PORT=5432
+      - DJANGO_SECRET_KEY=c22375093-emergency-services-secret-key-2024
+      - DEBUG=True
+    networks:
+      - emergency_network
+    depends_on:
+      postgis:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    container_name: emergency_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./backend/static:/static:ro
+    networks:
+      - emergency_network
+    depends_on:
+      - django
+
+networks:
+  emergency_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+
+volumes:
+  postgis_data:

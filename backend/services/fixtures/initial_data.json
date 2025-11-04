@@ -1,0 +1,937 @@
+[
+  {
+    "model": "services.emergencyservice",
+    "pk": 1,
+    "fields": {
+      "name": "St. James's Hospital",
+      "service_type": "hospital",
+      "address": "James's Street, Dublin 8, D08 NHY1",
+      "phone": "+353 1 410 3000",
+      "email": "info@stjames.ie",
+      "location": "SRID=4326;POINT(-6.2937 53.3415)",
+      "capacity": 800,
+      "is_24_hours": true,
+      "description": "Major teaching hospital with A&E department",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 2,
+    "fields": {
+      "name": "Mater Misericordiae University Hospital",
+      "service_type": "hospital",
+      "address": "Eccles Street, Dublin 7, D07 R2WY",
+      "phone": "+353 1 803 2000",
+      "email": "info@mater.ie",
+      "location": "SRID=4326;POINT(-6.2644 53.3592)",
+      "capacity": 540,
+      "is_24_hours": true,
+      "description": "University teaching hospital with comprehensive emergency services",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 3,
+    "fields": {
+      "name": "Beaumont Hospital",
+      "service_type": "hospital",
+      "address": "Beaumont Road, Dublin 9, D09 V2N0",
+      "phone": "+353 1 809 3000",
+      "email": "info@beaumont.ie",
+      "location": "SRID=4326;POINT(-6.2425 53.3902)",
+      "capacity": 820,
+      "is_24_hours": true,
+      "description": "Major acute hospital serving north Dublin",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 4,
+    "fields": {
+      "name": "Tallaght University Hospital",
+      "service_type": "hospital",
+      "address": "Tallaght, Dublin 24, D24 NR0A",
+      "phone": "+353 1 414 2000",
+      "email": "info@tuh.ie",
+      "location": "SRID=4326;POINT(-6.3588 53.2877)",
+      "capacity": 600,
+      "is_24_hours": true,
+      "description": "Primary acute hospital for south-west Dublin",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 5,
+    "fields": {
+      "name": "Connolly Hospital Blanchardstown",
+      "service_type": "hospital",
+      "address": "Blanchardstown, Dublin 15, D15 X40D",
+      "phone": "+353 1 646 5000",
+      "email": "info@connollyhospital.ie",
+      "location": "SRID=4326;POINT(-6.3847 53.3894)",
+      "capacity": 350,
+      "is_24_hours": true,
+      "description": "Acute hospital serving northwest Dublin",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 6,
+    "fields": {
+      "name": "St. Vincent's University Hospital",
+      "service_type": "hospital",
+      "address": "Elm Park, Dublin 4, D04 T6F4",
+      "phone": "+353 1 221 4000",
+      "email": "info@st-vincents.ie",
+      "location": "SRID=4326;POINT(-6.2245 53.3149)",
+      "capacity": 480,
+      "is_24_hours": true,
+      "description": "Teaching hospital with emergency department",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 7,
+    "fields": {
+      "name": "Rotunda Hospital",
+      "service_type": "hospital",
+      "address": "Parnell Square, Dublin 1, D01 P5W9",
+      "phone": "+353 1 817 1700",
+      "email": "info@rotunda.ie",
+      "location": "SRID=4326;POINT(-6.2648 53.3537)",
+      "capacity": 180,
+      "is_24_hours": true,
+      "description": "Maternity hospital with emergency obstetric care",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 8,
+    "fields": {
+      "name": "National Maternity Hospital",
+      "service_type": "hospital",
+      "address": "Holles Street, Dublin 2, D02 YH21",
+      "phone": "+353 1 637 3100",
+      "email": "info@nmh.ie",
+      "location": "SRID=4326;POINT(-6.2486 53.3367)",
+      "capacity": 160,
+      "is_24_hours": true,
+      "description": "Specialist maternity and neonatal hospital",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 9,
+    "fields": {
+      "name": "Coombe Women & Infants University Hospital",
+      "service_type": "hospital",
+      "address": "Cork Street, Dublin 8, D08 XW7X",
+      "phone": "+353 1 408 5200",
+      "email": "info@coombe.ie",
+      "location": "SRID=4326;POINT(-6.2856 53.3365)",
+      "capacity": 185,
+      "is_24_hours": true,
+      "description": "Leading maternity hospital",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 10,
+    "fields": {
+      "name": "Mater Private Hospital",
+      "service_type": "hospital",
+      "address": "Eccles Street, Dublin 7, D07 WKW8",
+      "phone": "+353 1 885 8888",
+      "email": "info@materprivate.ie",
+      "location": "SRID=4326;POINT(-6.2655 53.3598)",
+      "capacity": 340,
+      "is_24_hours": true,
+      "description": "Private hospital with emergency services",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 11,
+    "fields": {
+      "name": "Beacon Hospital",
+      "service_type": "hospital",
+      "address": "Sandyford, Dublin 18, D18 AK68",
+      "phone": "+353 1 293 6600",
+      "email": "info@beaconhospital.ie",
+      "location": "SRID=4326;POINT(-6.2189 53.2765)",
+      "capacity": 183,
+      "is_24_hours": true,
+      "description": "Modern private hospital",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 12,
+    "fields": {
+      "name": "Hermitage Medical Clinic",
+      "service_type": "hospital",
+      "address": "Old Lucan Road, Dublin 20, D20 W722",
+      "phone": "+353 1 645 9000",
+      "email": "info@hermitage.ie",
+      "location": "SRID=4326;POINT(-6.3689 53.3476)",
+      "capacity": 130,
+      "is_24_hours": true,
+      "description": "Private medical clinic and hospital",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 13,
+    "fields": {
+      "name": "Blackrock Clinic",
+      "service_type": "hospital",
+      "address": "Rock Road, Blackrock, Co. Dublin, A94 E4X7",
+      "phone": "+353 1 283 2222",
+      "email": "info@blackrock-clinic.com",
+      "location": "SRID=4326;POINT(-6.1789 53.2986)",
+      "capacity": 155,
+      "is_24_hours": true,
+      "description": "Private hospital in south Dublin",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 14,
+    "fields": {
+      "name": "Adelaide and Meath Hospital",
+      "service_type": "hospital",
+      "address": "Tallaght, Dublin 24, D24 NR0A",
+      "phone": "+353 1 414 2000",
+      "email": "info@amnch.ie",
+      "location": "SRID=4326;POINT(-6.3578 53.2888)",
+      "capacity": 420,
+      "is_24_hours": true,
+      "description": "Part of Tallaght hospital complex",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 15,
+    "fields": {
+      "name": "Cherry Orchard Hospital",
+      "service_type": "hospital",
+      "address": "Ballyfermot, Dublin 10, D10 NP71",
+      "phone": "+353 1 620 6000",
+      "email": "info@cherryorchard.ie",
+      "location": "SRID=4326;POINT(-6.3545 53.3389)",
+      "capacity": 110,
+      "is_24_hours": false,
+      "description": "Continuing care hospital",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 16,
+    "fields": {
+      "name": "Pearse Street Garda Station",
+      "service_type": "police",
+      "address": "Pearse Street, Dublin 2, D02 KF66",
+      "phone": "+353 1 666 9000",
+      "email": "pearse.street@garda.ie",
+      "location": "SRID=4326;POINT(-6.2488 53.3445)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Main city centre police station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 17,
+    "fields": {
+      "name": "Store Street Garda Station",
+      "service_type": "police",
+      "address": "Store Street, Dublin 1, D01 K0Y2",
+      "phone": "+353 1 666 8000",
+      "email": "store.street@garda.ie",
+      "location": "SRID=4326;POINT(-6.2535 53.3515)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North city centre Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 18,
+    "fields": {
+      "name": "Kevin Street Garda Station",
+      "service_type": "police",
+      "address": "Kevin Street Lower, Dublin 8, D08 HN7X",
+      "phone": "+353 1 666 9400",
+      "email": "kevin.street@garda.ie",
+      "location": "SRID=4326;POINT(-6.2699 53.3373)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "South city centre police station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 19,
+    "fields": {
+      "name": "Clontarf Garda Station",
+      "service_type": "police",
+      "address": "Clontarf Road, Dublin 3, D03 P590",
+      "phone": "+353 1 666 4800",
+      "email": "clontarf@garda.ie",
+      "location": "SRID=4326;POINT(-6.1958 53.3645)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "Northeast Dublin Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 20,
+    "fields": {
+      "name": "Rathfarnham Garda Station",
+      "service_type": "police",
+      "address": "Rathfarnham Village, Dublin 14, D14 KV89",
+      "phone": "+353 1 666 6500",
+      "email": "rathfarnham@garda.ie",
+      "location": "SRID=4326;POINT(-6.2793 53.3060)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "South Dublin Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 21,
+    "fields": {
+      "name": "Tallaght Garda Station",
+      "service_type": "police",
+      "address": "Tallaght, Dublin 24, D24 TK78",
+      "phone": "+353 1 666 6000",
+      "email": "tallaght@garda.ie",
+      "location": "SRID=4326;POINT(-6.3534 53.2861)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Major Garda station for southwest Dublin",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 22,
+    "fields": {
+      "name": "Cabra Garda Station",
+      "service_type": "police",
+      "address": "Cabra Road, Dublin 7, D07 K384",
+      "phone": "+353 1 666 7400",
+      "email": "cabra@garda.ie",
+      "location": "SRID=4326;POINT(-6.2956 53.3623)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Northwest Dublin Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 23,
+    "fields": {
+      "name": "Crumlin Garda Station",
+      "service_type": "police",
+      "address": "Crumlin Road, Dublin 12, D12 RW82",
+      "phone": "+353 1 666 6200",
+      "email": "crumlin@garda.ie",
+      "location": "SRID=4326;POINT(-6.3156 53.3234)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Southwest Dublin police station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 24,
+    "fields": {
+      "name": "Donnybrook Garda Station",
+      "service_type": "police",
+      "address": "Donnybrook, Dublin 4, D04 C7X2",
+      "phone": "+353 1 666 9600",
+      "email": "donnybrook@garda.ie",
+      "location": "SRID=4326;POINT(-6.2345 53.3178)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "South Dublin Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 25,
+    "fields": {
+      "name": "Raheny Garda Station",
+      "service_type": "police",
+      "address": "Station Road, Raheny, Dublin 5, D05 K7F2",
+      "phone": "+353 1 666 4700",
+      "email": "raheny@garda.ie",
+      "location": "SRID=4326;POINT(-6.1634 53.3767)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "Northeast coastal Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 26,
+    "fields": {
+      "name": "Finglas Garda Station",
+      "service_type": "police",
+      "address": "Finglas Road, Dublin 11, D11 KF84",
+      "phone": "+353 1 666 7500",
+      "email": "finglas@garda.ie",
+      "location": "SRID=4326;POINT(-6.2978 53.3889)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North Dublin Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 27,
+    "fields": {
+      "name": "Ballyfermot Garda Station",
+      "service_type": "police",
+      "address": "Ballyfermot Road, Dublin 10, D10 AH67",
+      "phone": "+353 1 666 7200",
+      "email": "ballyfermot@garda.ie",
+      "location": "SRID=4326;POINT(-6.3467 53.3423)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "West Dublin Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 28,
+    "fields": {
+      "name": "Santry Garda Station",
+      "service_type": "police",
+      "address": "Ballymun Road, Dublin 9, D09 VF21",
+      "phone": "+353 1 666 4200",
+      "email": "santry@garda.ie",
+      "location": "SRID=4326;POINT(-6.2534 53.3956)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North Dublin Garda station near airport",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 29,
+    "fields": {
+      "name": "Kilmainham Garda Station",
+      "service_type": "police",
+      "address": "Kilmainham, Dublin 8, D08 K2X3",
+      "phone": "+353 1 666 9700",
+      "email": "kilmainham@garda.ie",
+      "location": "SRID=4326;POINT(-6.3089 53.3423)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "West city Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 30,
+    "fields": {
+      "name": "Shankill Garda Station",
+      "service_type": "police",
+      "address": "Shankill, Co. Dublin, A96 N6C3",
+      "phone": "+353 1 666 5900",
+      "email": "shankill@garda.ie",
+      "location": "SRID=4326;POINT(-6.1278 53.2289)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "South coastal Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 31,
+    "fields": {
+      "name": "Tara Street Fire Station",
+      "service_type": "fire",
+      "address": "Tara Street, Dublin 2, D02 VX96",
+      "phone": "+353 1 222 4000",
+      "email": "tara@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.2541 53.3470)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "City centre fire station with rapid response",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 32,
+    "fields": {
+      "name": "Phibsborough Fire Station",
+      "service_type": "fire",
+      "address": "Phibsborough Road, Dublin 7, D07 A3P8",
+      "phone": "+353 1 222 4100",
+      "email": "phibsboro@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.2733 53.3602)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North Dublin fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 33,
+    "fields": {
+      "name": "Dolphins Barn Fire Station",
+      "service_type": "fire",
+      "address": "Dolphins Barn, Dublin 8, D08 P9C2",
+      "phone": "+353 1 222 4200",
+      "email": "dolphinsbarn@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.3017 53.3314)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Southwest Dublin fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 34,
+    "fields": {
+      "name": "Kilbarrack Fire Station",
+      "service_type": "fire",
+      "address": "Kilbarrack, Dublin 5, D05 WF70",
+      "phone": "+353 1 222 4300",
+      "email": "kilbarrack@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.1486 53.3853)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Northeast coastal fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 35,
+    "fields": {
+      "name": "Tallaght Fire Station",
+      "service_type": "fire",
+      "address": "Tallaght, Dublin 24, D24 KD82",
+      "phone": "+353 1 222 4400",
+      "email": "tallaght@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.3523 53.2867)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Southwest suburbs fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 36,
+    "fields": {
+      "name": "Finglas Fire Station",
+      "service_type": "fire",
+      "address": "Finglas West, Dublin 11, D11 VH36",
+      "phone": "+353 1 222 4500",
+      "email": "finglas@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.2989 53.3901)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North Dublin fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 37,
+    "fields": {
+      "name": "North Strand Fire Station",
+      "service_type": "fire",
+      "address": "North Strand, Dublin 3, D03 R2C4",
+      "phone": "+353 1 222 4600",
+      "email": "northstrand@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.2445 53.3589)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North city fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 38,
+    "fields": {
+      "name": "Donnybrook Fire Station",
+      "service_type": "fire",
+      "address": "Donnybrook, Dublin 4, D04 PY93",
+      "phone": "+353 1 222 4700",
+      "email": "donnybrook@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.2334 53.3167)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "South Dublin fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 39,
+    "fields": {
+      "name": "Blanchardstown Fire Station",
+      "service_type": "fire",
+      "address": "Blanchardstown, Dublin 15, D15 YN52",
+      "phone": "+353 1 222 4800",
+      "email": "blanchardstown@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.3856 53.3889)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Northwest Dublin fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 40,
+    "fields": {
+      "name": "Swords Fire Station",
+      "service_type": "fire",
+      "address": "Swords, Co. Dublin, K67 X2C9",
+      "phone": "+353 1 222 4900",
+      "email": "swords@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.2189 53.4597)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North county fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 41,
+    "fields": {
+      "name": "Dun Laoghaire Fire Station",
+      "service_type": "fire",
+      "address": "Crofton Road, Dun Laoghaire, A96 K2C3",
+      "phone": "+353 1 222 5000",
+      "email": "dunlaoghaire@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.1345 53.2934)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "South coastal fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 42,
+    "fields": {
+      "name": "Rathcoole Fire Station",
+      "service_type": "fire",
+      "address": "Rathcoole, Co. Dublin, D24 NX63",
+      "phone": "+353 1 222 5100",
+      "email": "rathcoole@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.4623 53.2845)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Southwest county fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 43,
+    "fields": {
+      "name": "Balbriggan Fire Station",
+      "service_type": "fire",
+      "address": "Balbriggan, Co. Dublin, K32 DX92",
+      "phone": "+353 1 222 5200",
+      "email": "balbriggan@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.1823 53.6089)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North coastal fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 44,
+    "fields": {
+      "name": "Howth Fire Station",
+      "service_type": "fire",
+      "address": "Howth, Co. Dublin, D13 FX29",
+      "phone": "+353 1 222 5300",
+      "email": "howth@dubfire.ie",
+      "location": "SRID=4326;POINT(-6.0645 53.3889)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "Northeast peninsula fire station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 45,
+    "fields": {
+      "name": "Nutgrove Medical Centre",
+      "service_type": "hospital",
+      "address": "Nutgrove Avenue, Rathfarnham, D14 PX26",
+      "phone": "+353 1 493 4500",
+      "email": "info@nutgrove.ie",
+      "location": "SRID=4326;POINT(-6.2698 53.2967)",
+      "capacity": 50,
+      "is_24_hours": false,
+      "description": "Medical centre with minor injuries unit",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 46,
+    "fields": {
+      "name": "Baggot Street Hospital",
+      "service_type": "hospital",
+      "address": "Upper Baggot Street, Dublin 4, D04 V996",
+      "phone": "+353 1 667 1122",
+      "email": "info@baggotstreet.ie",
+      "location": "SRID=4326;POINT(-6.2445 53.3306)",
+      "capacity": 95,
+      "is_24_hours": false,
+      "description": "Private hospital",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 47,
+    "fields": {
+      "name": "Santry Sports Clinic",
+      "service_type": "hospital",
+      "address": "Santry, Dublin 9, D09 XY76",
+      "phone": "+353 1 842 5876",
+      "email": "info@santry-clinic.ie",
+      "location": "SRID=4326;POINT(-6.2478 53.3967)",
+      "capacity": 35,
+      "is_24_hours": false,
+      "description": "Sports injury and medical clinic",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 48,
+    "fields": {
+      "name": "Lucan Garda Station",
+      "service_type": "police",
+      "address": "Lucan, Co. Dublin, K78 FN26",
+      "phone": "+353 1 666 7300",
+      "email": "lucan@garda.ie",
+      "location": "SRID=4326;POINT(-6.4489 53.3567)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "West county Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 49,
+    "fields": {
+      "name": "Dundrum Garda Station",
+      "service_type": "police",
+      "address": "Main Street, Dundrum, D14 WC63",
+      "phone": "+353 1 666 5600",
+      "email": "dundrum@garda.ie",
+      "location": "SRID=4326;POINT(-6.2478 53.2923)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "South Dublin Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 50,
+    "fields": {
+      "name": "Swords Garda Station",
+      "service_type": "police",
+      "address": "Main Street, Swords, K67 P9X2",
+      "phone": "+353 1 666 4700",
+      "email": "swords@garda.ie",
+      "location": "SRID=4326;POINT(-6.2178 53.4589)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North county Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 51,
+    "fields": {
+      "name": "Malahide Garda Station",
+      "service_type": "police",
+      "address": "Back Road, Malahide, K36 TR58",
+      "phone": "+353 1 666 4600",
+      "email": "malahide@garda.ie",
+      "location": "SRID=4326;POINT(-6.1545 53.4512)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "North coastal Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 52,
+    "fields": {
+      "name": "Bray Garda Station",
+      "service_type": "police",
+      "address": "Bray, Co. Wicklow, A98 WX72",
+      "phone": "+353 1 666 5300",
+      "email": "bray@garda.ie",
+      "location": "SRID=4326;POINT(-6.0989 53.2034)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "South county Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 53,
+    "fields": {
+      "name": "Blackrock Garda Station",
+      "service_type": "police",
+      "address": "Rock Road, Blackrock, A94 T2N9",
+      "phone": "+353 1 666 5200",
+      "email": "blackrock@garda.ie",
+      "location": "SRID=4326;POINT(-6.1789 53.2989)",
+      "capacity": 0,
+      "is_24_hours": false,
+      "description": "South coastal Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 54,
+    "fields": {
+      "name": "Ballymun Garda Station",
+      "service_type": "police",
+      "address": "Ballymun, Dublin 11, D11 KW91",
+      "phone": "+353 1 666 4400",
+      "email": "ballymun@garda.ie",
+      "location": "SRID=4326;POINT(-6.2645 53.3967)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "North Dublin Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "services.emergencyservice",
+    "pk": 55,
+    "fields": {
+      "name": "Ronanstown Garda Station",
+      "service_type": "police",
+      "address": "Ronanstown, Clondalkin, D22 FH62",
+      "phone": "+353 1 666 6700",
+      "email": "ronanstown@garda.ie",
+      "location": "SRID=4326;POINT(-6.3823 53.3189)",
+      "capacity": 0,
+      "is_24_hours": true,
+      "description": "West Dublin Garda station",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  }
+]

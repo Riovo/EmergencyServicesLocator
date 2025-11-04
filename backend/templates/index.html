@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Services Locator - Dublin</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div>
+                    <h1>
+                        <span class="header-icon">🚑</span>
+                        Emergency Services Locator
+                    </h1>
+                    <p>Find the nearest hospitals, police stations, and fire stations in Dublin, Ireland</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Map Section -->
+            <div class="map-container">
+                <div id="map"></div>
+                <div class="map-overlay">
+                    <h6><i class="fas fa-map-marker-alt"></i> Your Location</h6>
+                    <div class="coordinates">
+                        <div>Lat: <span id="currentLat">53.3365</span></div>
+                        <div>Lng: <span id="currentLng">-6.2856</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                
+                <!-- LOCATION SEARCH - AT TOP (Most Important) -->
+                <div class="control-section">
+                    <div class="section-title">
+                        <span class="section-icon"><i class="fas fa-search-location"></i></span>
+                        Find Your Location
+                    </div>
+                    
+                    <!-- Address/Eircode Search -->
+                    <label class="input-label">
+                        <i class="fas fa-map-pin"></i> Enter Address or Eircode
+                    </label>
+                    <div class="address-search-group">
+                        <input 
+                            type="text" 
+                            class="location-input" 
+                            id="addressInput" 
+                            placeholder="e.g., D08 R77K, Cork Street Dublin 8"
+                            autocomplete="off"
+                        >
+                        <button class="btn-custom btn-success-custom" onclick="searchAddress()" title="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- GPS Button -->
+                    <button class="btn-custom btn-primary-custom" onclick="useCurrentGPS()">
+                        <i class="fas fa-crosshairs"></i> Use My GPS Location
+                    </button>
+                    
+                    <!-- Manual Coordinates (Collapsed by default) -->
+                    <details style="margin-top: 16px;">
+                        <summary style="cursor: pointer; font-size: 0.875rem; color: #767676; font-weight: 600; padding: 8px 0;">
+                            <i class="fas fa-caret-right"></i> Advanced: Enter Coordinates
+                        </summary>
+                        <div style="margin-top: 12px;">
+                            <div class="location-input-group">
+                                <input type="number" class="location-input" id="inputLat" placeholder="Latitude" step="0.0001" value="53.3365">
+                                <input type="number" class="location-input" id="inputLng" placeholder="Longitude" step="0.0001" value="-6.2856">
+                            </div>
+                        </div>
+                    </details>
+                    
+                    <div class="draggable-hint">
+                        <i class="fas fa-hand-pointer"></i>
+                        <span>Drag the 📍 pin on map to set location instantly!</span>
+                    </div>
+                </div>
+
+                <!-- QUICK FILTERS -->
+                <div class="control-section">
+                    <div class="section-title">
+                        <span class="section-icon"><i class="fas fa-filter"></i></span>
+                        Quick Filters
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button class="btn-custom btn-hospital" onclick="filterByType('hospital')">
+                            🏥 Hospitals
+                        </button>
+                        <button class="btn-custom btn-police" onclick="filterByType('police')">
+                            👮 Police
+                        </button>
+                        <button class="btn-custom btn-fire" onclick="filterByType('fire')">
+                            🚒 Fire
+                        </button>
+                        <button class="btn-custom btn-all" onclick="showAllServices()">
+                            🌍 All
+                        </button>
+                    </div>
+                    
+                    <!-- Clear Filters Button -->
+                    <button class="btn-custom" onclick="clearAllFilters()" style="background: #6c757d; color: white; margin-top: 10px;">
+                        <i class="fas fa-times-circle"></i> Clear All Filters
+                    </button>
+                </div>
+
+                <!-- SEARCH TOOLS -->
+                <div class="control-section">
+                    <div class="section-title">
+                        <span class="section-icon"><i class="fas fa-search"></i></span>
+                        Search Nearby
+                    </div>
+                    
+                    <!-- Nearest Search -->
+                    <div style="margin-bottom: 16px;">
+                        <label class="input-label">Find Nearest</label>
+                        <div style="display: flex; gap: 10px;">
+                            <select class="location-input" id="nearestLimit" style="flex: 1;">
+                                <option value="3">3 Services</option>
+                                <option value="5" selected>5 Services</option>
+                                <option value="10">10 Services</option>
+                                <option value="15">15 Services</option>
+                            </select>
+                            <button class="btn-custom btn-primary-custom" onclick="findNearest()" style="width: auto; margin: 0; padding: 14px 24px;">
+                                <i class="fas fa-location-arrow"></i> Find
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Radius Search -->
+                    <div>
+                        <label class="input-label">Search Radius</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" class="location-input" id="radiusInput" value="5" min="1" max="50" style="flex: 1;" placeholder="km">
+                            <button class="btn-custom btn-success-custom" onclick="searchWithinRadius()" style="width: auto; margin: 0; padding: 14px 24px;">
+                                <i class="fas fa-circle"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATISTICS -->
+                <div class="control-section">
+                    <div class="section-title">
+                        <span class="section-icon"><i class="fas fa-chart-pie"></i></span>
+                        Statistics
+                    </div>
+                    <div class="stats-grid" id="statsContainer">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESULTS -->
+                <div id="resultsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Leaflet MarkerCluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="/static/js/map.js"></script>
+</body>
+</html>
