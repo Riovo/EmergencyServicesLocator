@@ -163,7 +163,7 @@ A location-based services (LBS) web application for finding emergency services (
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Riovo/Emergency-Services-Locator
 cd emergency-services-lbs
 ```
 
