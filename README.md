@@ -103,7 +103,7 @@ A location-based services (LBS) web application for finding emergency services (
 - **Distance Calculation**: Accurate distance display in kilometers for all search results
 - **24-Hour Availability**: Visual indicators showing which services operate 24/7
 - **Marker Clustering**: Automatic grouping of nearby markers for better performance and clarity
-- **Geocoding Support**: Search by full address or Irish Eircode (e.g., "D08 R77K")
+- **Geocoding Support**: Search by full address or Irish Eircode (Eircode look up is inaccurate due to API)
 - **Reverse Geocoding**: Automatic address lookup when clicking on map
 - **GPS Geolocation**: Browser-based location detection with fallback
 
@@ -514,6 +514,7 @@ All with real Dublin addresses and accurate coordinates.
 - No real time traffic data integration
 - Basic error handling
 - Geocoding depends on external APIs - rate limits may apply
+- Postcode lookup not accurate due to free API
 
 ---
 

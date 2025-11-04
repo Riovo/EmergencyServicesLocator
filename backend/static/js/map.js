@@ -64,7 +64,7 @@ function updateLocationDisplay() {
     document.getElementById('inputLng').value = userLocation.lng.toFixed(4);
 }
 
-// ACTUALLY WORKING Eircode search using Geocode.ie API
+// Postcode look up inaccurate
 async function searchAddress() {
     const input = document.getElementById('addressInput').value.trim();
     
@@ -79,16 +79,14 @@ async function searchAddress() {
     const isEircode = /^[A-Z]\d{2}\s?[A-Z0-9]{4}$/i.test(cleanInput.replace(/\s+/g, ''));
     
     try {
-        let result = null;
-        
-        // Method 1: Try with Photon (better for Eircodes)
+        // Method 1: If it's an Eircode, use Eirfinder API first
         if (isEircode) {
             const cleanEircode = cleanInput.replace(/\s+/g, '').toUpperCase();
-            result = await searchWithPhoton(cleanEircode);
+            const result = await searchWithEirfinder(cleanEircode);
             if (result) return;
         }
         
-        // Method 2: Try Nominatim with better parameters
+        // Method 2: Try Nominatim for regular addresses
         const nominatimUrls = [
             `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanInput + ' Ireland')}&format=json&limit=5&addressdetails=1`,
             `https://nominatim.openstreetmap.org/search?street=${encodeURIComponent(cleanInput)}&country=Ireland&format=json&limit=5&addressdetails=1`,
@@ -120,7 +118,7 @@ async function searchAddress() {
             }
         }
         
-        showAlert('❌ Location not found. Please try:\n• Full address (e.g., "Cork Street Dublin 8")\n• Nearby landmark\n• Different spelling', 'error');
+        showAlert('❌ Location not found. Please try:\n• Full address (e.g., "Cork Street")\n• Valid Eircode (e.g., "D08 R47K")\n• Nearby landmark', 'error');
         
     } catch (error) {
         console.error('Search error:', error);
@@ -128,7 +126,139 @@ async function searchAddress() {
     }
 }
 
-// Try Photon geocoder
+// Search for Irish Eircode using free geocoding APIs
+async function searchWithEirfinder(eircode) {
+    console.log('Searching for Eircode:', eircode);
+    
+    // Strategy 1: Try Geocode.xyz (supports Irish Eircodes, free tier available)
+    try {
+        const url = `https://geocode.xyz/${encodeURIComponent(eircode)}?geoit=json&region=IE`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        console.log('Geocode.xyz response:', data);
+        
+        if (data && data.latt && data.longt && !data.error) {
+            const lat = parseFloat(data.latt);
+            const lng = parseFloat(data.longt);
+            
+            // Validate Ireland bounds
+            if (lat >= 51.4 && lat <= 55.4 && lng >= -10.5 && lng <= -5.5) {
+                // Build address from response
+                const addressParts = [];
+                if (data.staddress) addressParts.push(data.staddress);
+                if (data.city) addressParts.push(data.city);
+                if (data.region) addressParts.push(data.region);
+                addressParts.push(eircode);
+                
+                const fullAddress = addressParts.length > 1 ? addressParts.join(', ') : data.standard?.city || `Location: ${eircode}`;
+                
+                userLocation = { lat, lng };
+                addUserMarker(lat, lng);
+                map.setView([lat, lng], 18);
+                updateLocationDisplay();
+                
+                showAlert(`✓ Found Eircode: ${eircode}`, 'success');
+                document.getElementById('addressInput').value = fullAddress;
+                return true;
+            }
+        }
+    } catch (error) {
+        console.log('Geocode.xyz failed:', error);
+    }
+    
+    // Strategy 2: Try Nominatim with structured Eircode search
+    try {
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(eircode)}&country=Ireland&format=json&limit=5&addressdetails=1`
+        );
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+            // Find best Irish result
+            for (const result of data) {
+                const lat = parseFloat(result.lat);
+                const lng = parseFloat(result.lon);
+                
+                // Validate Ireland bounds
+                if (lat >= 51.4 && lat <= 55.4 && lng >= -10.5 && lng <= -5.5) {
+                    const addressParts = [];
+                    if (result.address) {
+                        if (result.address.house_number) addressParts.push(result.address.house_number);
+                        if (result.address.road) addressParts.push(result.address.road);
+                        if (result.address.suburb) addressParts.push(result.address.suburb);
+                        if (result.address.city || result.address.town) addressParts.push(result.address.city || result.address.town);
+                        addressParts.push(eircode);
+                    }
+                    
+                    const fullAddress = addressParts.length > 0 ? addressParts.join(', ') : result.display_name;
+                    
+                    userLocation = { lat, lng };
+                    addUserMarker(lat, lng);
+                    map.setView([lat, lng], 18);
+                    updateLocationDisplay();
+                    
+                    showAlert(`✓ Found Eircode: ${eircode}`, 'success');
+                    document.getElementById('addressInput').value = fullAddress;
+                    return true;
+                }
+            }
+        }
+    } catch (error) {
+        console.log('Nominatim Eircode search failed:', error);
+    }
+    
+    // Strategy 3: Try broader search with Eircode + Ireland
+    try {
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(eircode + ' Ireland')}&format=json&limit=5&addressdetails=1&countrycodes=ie`
+        );
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+            // Filter for Ireland
+            const irishResults = data.filter(r => {
+                const lat = parseFloat(r.lat);
+                const lng = parseFloat(r.lon);
+                return lat >= 51.4 && lat <= 55.4 && lng >= -10.5 && lng <= -5.5;
+            });
+            
+            if (irishResults.length > 0) {
+                const result = irishResults[0];
+                const lat = parseFloat(result.lat);
+                const lng = parseFloat(result.lon);
+                
+                const addressParts = [];
+                if (result.address) {
+                    if (result.address.house_number) addressParts.push(result.address.house_number);
+                    if (result.address.road) addressParts.push(result.address.road);
+                    if (result.address.suburb) addressParts.push(result.address.suburb);
+                    if (result.address.city || result.address.town) addressParts.push(result.address.city || result.address.town);
+                    addressParts.push(eircode);
+                }
+                
+                const fullAddress = addressParts.length > 0 ? addressParts.join(', ') : result.display_name;
+                
+                userLocation = { lat, lng };
+                addUserMarker(lat, lng);
+                map.setView([lat, lng], 18);
+                updateLocationDisplay();
+                
+                showAlert(`✓ Found: ${fullAddress}`, 'success');
+                document.getElementById('addressInput').value = fullAddress;
+                return true;
+            }
+        }
+    } catch (error) {
+        console.log('Broad search failed:', error);
+    }
+    
+    console.log(`Eircode ${eircode} not found in any geocoding service`);
+    return false;
+}
+
+// Try Photon geocoder (backup method)
 async function searchWithPhoton(query) {
     try {
         const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`;
