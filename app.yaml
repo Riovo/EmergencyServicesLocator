@@ -14,7 +14,7 @@ databases:
 services:
   - name: emergency-django
     github:
-      repo: Riovo/Emergency-Services-Locator
+      repo: Riovo/EmergencyServicesLocator
       branch: main
       deploy_on_push: true
     
