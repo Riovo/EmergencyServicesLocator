@@ -33,6 +33,7 @@ INSTALLED_APPS = [
 # Middleware classes - process requests/responses in order
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware', # Security enhancements
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Serve static files in production
     'corsheaders.middleware.CorsMiddleware', # Handle CORS before other middleware
     'django.contrib.sessions.middleware.SessionMiddleware', # Session management
     'django.middleware.common.CommonMiddleware', # Common operations
@@ -96,6 +97,9 @@ USE_TZ = True # Use timezone-aware datetimes
 STATIC_URL = '/static/' # URL prefix for static files
 STATIC_ROOT = BASE_DIR / 'staticfiles' # Directory where collectstatic puts files
 STATICFILES_DIRS = [BASE_DIR / 'static'] # Additional directories to search for static files
+
+# WhiteNoise configuration for serving static files in production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type for models
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
