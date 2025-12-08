@@ -1,62 +1,70 @@
-// Global variables
-let map;
-let markers = [];
-let userMarker = null;
-let markerCluster = null;
-let searchLines = [];
-let searchCircle = null;
-let userLocation = { lat: 53.3365, lng: -6.2856 }; // Cork Street, Dublin 8
-const API_BASE = '/api';
+// Global variables for map and markers
+let map; // Leaflet map instance
+let markers = []; // Array of all service markers on the map
+let userMarker = null; // Marker showing user's current location
+let markerCluster = null; // Marker cluster group for grouping nearby markers
+let searchLines = []; // Lines drawn from user location to services
+let searchCircle = null; // Circle showing radius search area
+let routeLayer = null; // Polyline showing route to selected service
+let userLocation = { lat: 53.3365, lng: -6.2856 }; // Default location (Dublin city center)
+const API_BASE = '/api'; // Base URL for API endpoints
 
-// Service configuration
+// Configuration for each service type with colors and icons
 const serviceConfig = {
     hospital: { color: '#FF385C', icon: '🏥', label: 'Hospital' },
     police: { color: '#3B82F6', icon: '👮', label: 'Police Station' },
     fire: { color: '#F59E0B', icon: '🚒', label: 'Fire Station' }
 };
 
-// Initialize map
+// Initialize the Leaflet map
 function initMap() {
+    // Create map instance with canvas rendering for better performance
     map = L.map('map', {
-        preferCanvas: true,
-        zoomControl: true,
-        attributionControl: true
-    }).setView([userLocation.lat, userLocation.lng], 13);
+        preferCanvas: true, // Use canvas instead of SVG for better performance with many markers
+        zoomControl: true, // Show zoom controls
+        attributionControl: true // Show attribution
+    }).setView([userLocation.lat, userLocation.lng], 13); // Center on Dublin with zoom level 13
     
+    // Add OpenStreetMap tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
-        maxZoom: 19,
-        tileSize: 256
+        maxZoom: 19, // Maximum zoom level
+        tileSize: 256 // Tile size in pixels
     }).addTo(map);
 
+    // Fix map size calculation after container is fully loaded
     setTimeout(() => map.invalidateSize(), 100);
 
+    // Create marker cluster group to group nearby markers together
     markerCluster = L.markerClusterGroup({
-        maxClusterRadius: 50,
-        spiderfyOnMaxZoom: true,
-        showCoverageOnHover: true,
-        zoomToBoundsOnClick: true,
-        disableClusteringAtZoom: 15,
-        chunkedLoading: true,
-        chunkInterval: 200,
-        chunkDelay: 50
+        maxClusterRadius: 50, // Maximum radius to cluster markers
+        spiderfyOnMaxZoom: true, // Spread out markers when zoomed in
+        showCoverageOnHover: true, // Show circle when hovering over cluster
+        zoomToBoundsOnClick: true, // Zoom to show all markers when clicking cluster
+        disableClusteringAtZoom: 15, // Stop clustering at zoom level 15
+        chunkedLoading: true, // Load markers in chunks for better performance
+        chunkInterval: 200, // Time between chunks
+        chunkDelay: 50 // Delay before starting chunks
     });
     map.addLayer(markerCluster);
 
+    // Add initial user location marker
     addUserMarker(userLocation.lat, userLocation.lng);
 
+    // Handle map clicks to set user location
     map.on('click', function(e) {
         userLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
         addUserMarker(e.latlng.lat, e.latlng.lng);
         updateLocationDisplay();
+        // Get address for the clicked location
         reverseGeocode(e.latlng.lat, e.latlng.lng);
     });
 
+    // Load all emergency services and statistics on page load
     loadAllServices();
     loadStatistics();
 }
 
-// Update location display
 function updateLocationDisplay() {
     document.getElementById('currentLat').textContent = userLocation.lat.toFixed(4);
     document.getElementById('currentLng').textContent = userLocation.lng.toFixed(4);
@@ -64,100 +72,82 @@ function updateLocationDisplay() {
     document.getElementById('inputLng').value = userLocation.lng.toFixed(4);
 }
 
-// ACTUALLY WORKING Eircode search using Geocode.ie API
+// Search for address and move map to that location
 async function searchAddress() {
     const input = document.getElementById('addressInput').value.trim();
+    const searchButton = document.querySelector('.btn-success-custom');
     
+    // Validate input
     if (!input) {
-        showAlert('Please enter an address or Eircode', 'error');
+        showAlert('Please enter an address', 'error');
         return;
+    }
+    
+    // Show loading state on search button
+    if (searchButton) {
+        searchButton.disabled = true;
+        searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     }
     
     showAlert('🔍 Searching...', 'info');
     
-    const cleanInput = input.replace(/\s+/g, ' ').trim();
-    const isEircode = /^[A-Z]\d{2}\s?[A-Z0-9]{4}$/i.test(cleanInput.replace(/\s+/g, ''));
-    
     try {
-        let result = null;
+        // Call geocoding API to convert address to coordinates
+        const response = await fetch(`${API_BASE}/geocode/?query=${encodeURIComponent(input)}`);
+        const data = await response.json();
         
-        // Method 1: Try with Photon (better for Eircodes)
-        if (isEircode) {
-            const cleanEircode = cleanInput.replace(/\s+/g, '').toUpperCase();
-            result = await searchWithPhoton(cleanEircode);
-            if (result) return;
-        }
-        
-        // Method 2: Try Nominatim with better parameters
-        const nominatimUrls = [
-            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanInput + ' Ireland')}&format=json&limit=5&addressdetails=1`,
-            `https://nominatim.openstreetmap.org/search?street=${encodeURIComponent(cleanInput)}&country=Ireland&format=json&limit=5&addressdetails=1`,
-            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanInput)}&countrycodes=ie&format=json&limit=5&addressdetails=1`
-        ];
-        
-        for (const url of nominatimUrls) {
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+        if (response.ok && data.lat && data.lng) {
+            const lat = parseFloat(data.lat);
+            const lng = parseFloat(data.lng);
+            
+            // Validate coordinates are within Ireland bounds
+            // Ireland latitude: 51.4 to 55.4, longitude: -10.5 to -5.5
+            if (lat >= 51.4 && lat <= 55.4 && lng >= -10.5 && lng <= -5.5) {
+                // Update user location and map
+                userLocation = { lat, lng };
+                addUserMarker(lat, lng);
+                map.setView([lat, lng], 16); // Zoom to level 16 for street view
+                updateLocationDisplay();
                 
-                if (data && data.length > 0) {
-                    const bestResult = data[0];
-                    const lat = parseFloat(bestResult.lat);
-                    const lng = parseFloat(bestResult.lon);
-                    
-                    userLocation = { lat, lng };
-                    addUserMarker(lat, lng);
-                    map.setView([lat, lng], isEircode ? 18 : 16);
-                    updateLocationDisplay();
-                    
-                    const displayName = formatAddress(bestResult.address) || bestResult.display_name;
-                    showAlert(`✓ Found: ${displayName}`, 'success');
-                    document.getElementById('addressInput').value = displayName;
-                    return;
+                // Update input field with formatted address if available
+                if (data.formatted_address) {
+                    document.getElementById('addressInput').value = data.formatted_address;
                 }
-            } catch (e) {
-                console.log('Trying next method...');
+                
+                showAlert(`✓ Found: ${data.formatted_address || input}`, 'success');
+                if (searchButton) {
+                    searchButton.disabled = false;
+                    searchButton.innerHTML = '<i class="fas fa-search"></i>';
+                }
+                return;
+            } else {
+                showAlert('❌ Location found is outside Ireland. Please try an Irish address.', 'error');
+                if (searchButton) {
+                    searchButton.disabled = false;
+                    searchButton.innerHTML = '<i class="fas fa-search"></i>';
+                }
+                return;
+            }
+        } else {
+            // Handle API error response
+            const errorMsg = data.error || 'Location not found';
+            showAlert(`❌ ${errorMsg}\n\nTry:\n• Full address (e.g., "Cork Street Dublin 8")\n• Street name with area`, 'error');
+            if (searchButton) {
+                searchButton.disabled = false;
+                searchButton.innerHTML = '<i class="fas fa-search"></i>';
             }
         }
         
-        showAlert('❌ Location not found. Please try:\n• Full address (e.g., "Cork Street Dublin 8")\n• Nearby landmark\n• Different spelling', 'error');
-        
     } catch (error) {
-        console.error('Search error:', error);
-        showAlert('⚠️ Search failed. Please try again.', 'error');
-    }
-}
-
-// Try Photon geocoder
-async function searchWithPhoton(query) {
-    try {
-        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`;
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        if (data.features && data.features.length > 0) {
-            const feature = data.features[0];
-            const [lng, lat] = feature.geometry.coordinates;
-            
-            userLocation = { lat, lng };
-            addUserMarker(lat, lng);
-            map.setView([lat, lng], 18);
-            updateLocationDisplay();
-            
-            const props = feature.properties;
-            const address = [props.name, props.street, props.city, props.postcode].filter(Boolean).join(', ');
-            
-            showAlert(`✓ Found: ${address}`, 'success');
-            document.getElementById('addressInput').value = address;
-            return true;
+        console.error('Geocoding error:', error);
+        showAlert('⚠️ Search failed. Please check your connection and try again.', 'error');
+        if (searchButton) {
+            searchButton.disabled = false;
+            searchButton.innerHTML = '<i class="fas fa-search"></i>';
         }
-        return false;
-    } catch (error) {
-        return false;
     }
 }
 
-// Format address nicely
 function formatAddress(address) {
     if (!address) return null;
     
@@ -166,12 +156,9 @@ function formatAddress(address) {
     if (address.road) parts.push(address.road);
     if (address.suburb) parts.push(address.suburb);
     if (address.city || address.town) parts.push(address.city || address.town);
-    if (address.postcode) parts.push(address.postcode);
-    
     return parts.join(', ');
 }
 
-// Reverse geocode
 async function reverseGeocode(lat, lng) {
     try {
         const response = await fetch(
@@ -189,7 +176,6 @@ async function reverseGeocode(lat, lng) {
     }
 }
 
-// Use GPS
 function useCurrentGPS() {
     if ('geolocation' in navigator) {
         showAlert('📡 Getting GPS location...', 'info');
@@ -215,7 +201,6 @@ function useCurrentGPS() {
     }
 }
 
-// FIXED: Draggable marker with real-time update
 function addUserMarker(lat, lng) {
     if (userMarker) {
         map.removeLayer(userMarker);
@@ -236,17 +221,14 @@ function addUserMarker(lat, lng) {
     
     userMarker.bindPopup('<div style="text-align: center; font-weight: 600; padding: 8px;"><b>📍 Your Location</b><br><small style="color: #767676;">Drag me anywhere!</small></div>');
     
-    // Update coordinates WHILE dragging
     userMarker.on('drag', function(e) {
         const position = e.target.getLatLng();
         userLocation = { lat: position.lat, lng: position.lng };
         updateLocationDisplay();
         
-        // FIXED: Update lines/circles while dragging
         updateSearchVisuals();
     });
     
-    // Reverse geocode when done
     userMarker.on('dragend', function(e) {
         const position = e.target.getLatLng();
         reverseGeocode(position.lat, position.lng);
@@ -254,14 +236,11 @@ function addUserMarker(lat, lng) {
     });
 }
 
-// FIXED: Update search visuals (lines/circles) during drag
 function updateSearchVisuals() {
-    // Update lines if they exist
     if (searchLines.length > 0) {
         searchLines.forEach(line => map.removeLayer(line));
         searchLines = [];
         
-        // Redraw lines to current services
         markers.forEach(marker => {
             const markerLatLng = marker.getLatLng();
             const line = L.polyline([
@@ -277,7 +256,6 @@ function updateSearchVisuals() {
         });
     }
     
-    // Update circle if it exists
     if (searchCircle) {
         const radius = searchCircle.getRadius();
         map.removeLayer(searchCircle);
@@ -291,7 +269,6 @@ function updateSearchVisuals() {
     }
 }
 
-// Load all services
 async function loadAllServices() {
     try {
         const response = await fetch(`${API_BASE}/services/`);
@@ -303,7 +280,6 @@ async function loadAllServices() {
     }
 }
 
-// Filter by type
 async function filterByType(type) {
     clearMarkers();
     clearSearchVisuals();
@@ -318,7 +294,6 @@ async function filterByType(type) {
     }
 }
 
-// Show all services
 function showAllServices() {
     clearMarkers();
     clearResults();
@@ -327,7 +302,6 @@ function showAllServices() {
     showAlert('Showing all services', 'success');
 }
 
-// FIXED: Clear all filters actually works
 function clearAllFilters() {
     clearMarkers();
     clearResults();
@@ -337,7 +311,6 @@ function clearAllFilters() {
     showAlert('✓ All filters cleared', 'success');
 }
 
-// Clear search visuals (lines and circles)
 function clearSearchVisuals() {
     searchLines.forEach(line => map.removeLayer(line));
     searchLines = [];
@@ -345,9 +318,9 @@ function clearSearchVisuals() {
         map.removeLayer(searchCircle);
         searchCircle = null;
     }
+    clearRoute();
 }
 
-// Find nearest
 async function findNearest() {
     const limit = document.getElementById('nearestLimit').value;
     clearMarkers();
@@ -383,7 +356,6 @@ async function findNearest() {
     }
 }
 
-// Search within radius
 async function searchWithinRadius() {
     const radius = document.getElementById('radiusInput').value;
     clearMarkers();
@@ -414,7 +386,6 @@ async function searchWithinRadius() {
     }
 }
 
-// Display services on map
 function displayServicesOnMap(services, useClustering = true) {
     clearMarkers();
 
@@ -435,6 +406,9 @@ function displayServicesOnMap(services, useClustering = true) {
             title: service.name
         });
 
+        // Escape service name for use in onclick
+        const escapedName = service.name.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        
         const popupContent = `
             <div class="popup-content">
                 <div class="popup-title">${config.icon} ${service.name}</div>
@@ -454,7 +428,14 @@ function displayServicesOnMap(services, useClustering = true) {
                     ${service.is_24_hours ? 
                         '<div class="popup-item"><i class="fas fa-clock info-icon"></i><span style="color: #10B981; font-weight: 600;">Open 24 Hours</span></div>' : 
                         '<div class="popup-item"><i class="fas fa-clock info-icon"></i><span style="color: #F59E0B; font-weight: 600;">Limited Hours</span></div>'}
-                    ${service.distance ? `<div class="popup-item"><i class="fas fa-route info-icon"></i><span><b>${service.distance.km} km</b> away</span></div>` : ''}
+                    ${service.distance ? `<div class="popup-item"><i class="fas fa-route info-icon"></i><span><b>${service.distance.km} km</b> away (as crow flies)</span></div>` : ''}
+                </div>
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #EBEBEB;">
+                    <button onclick="getRouteToService(${service.latitude}, ${service.longitude}, '${escapedName}')" 
+                            class="btn-route" 
+                            style="width: 100%; padding: 10px; background: linear-gradient(135deg, ${config.color} 0%, ${config.color}dd 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.875rem; transition: all 0.2s ease;">
+                        <i class="fas fa-directions"></i> Get Directions
+                    </button>
                 </div>
             </div>
         `;
@@ -487,7 +468,6 @@ function displayServicesOnMap(services, useClustering = true) {
     }
 }
 
-// Display results
 function displayResults(services, title) {
     const container = document.getElementById('resultsContainer');
     
@@ -550,28 +530,81 @@ async function loadStatistics() {
         const response = await fetch(`${API_BASE}/services/statistics/`);
         const data = await response.json();
         
+        // Calculate percentages for visual bars
+        const total = data.total_services;
+        const hospitalPct = total > 0 ? Math.round((data.by_type.hospitals / total) * 100) : 0;
+        const policePct = total > 0 ? Math.round((data.by_type.police_stations / total) * 100) : 0;
+        const firePct = total > 0 ? Math.round((data.by_type.fire_stations / total) * 100) : 0;
+        const available24hPct = total > 0 ? Math.round((data.available_24_hours / total) * 100) : 0;
+        
         const statsHTML = `
-            <div class="stat-card">
+            <div class="stat-card stat-total">
                 <div class="stat-number">${data.total_services}</div>
-                <div class="stat-label">Total</div>
+                <div class="stat-label">Total Services</div>
+                <div class="stat-subtitle">Across Dublin</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number">${data.by_type.hospitals}</div>
-                <div class="stat-label">Hospitals</div>
+            <div class="stat-card stat-hospital">
+                <div class="stat-header">
+                    <span class="stat-icon">🏥</span>
+                    <div>
+                        <div class="stat-number">${data.by_type.hospitals}</div>
+                        <div class="stat-label">Hospitals</div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width: ${hospitalPct}%; background: #FF385C;"></div>
+                </div>
+                <div class="stat-percentage">${hospitalPct}%</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number">${data.by_type.police_stations}</div>
-                <div class="stat-label">Police</div>
+            <div class="stat-card stat-police">
+                <div class="stat-header">
+                    <span class="stat-icon">👮</span>
+                    <div>
+                        <div class="stat-number">${data.by_type.police_stations}</div>
+                        <div class="stat-label">Police Stations</div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width: ${policePct}%; background: #3B82F6;"></div>
+                </div>
+                <div class="stat-percentage">${policePct}%</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number">${data.by_type.fire_stations}</div>
-                <div class="stat-label">Fire</div>
+            <div class="stat-card stat-fire">
+                <div class="stat-header">
+                    <span class="stat-icon">🚒</span>
+                    <div>
+                        <div class="stat-number">${data.by_type.fire_stations}</div>
+                        <div class="stat-label">Fire Stations</div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width: ${firePct}%; background: #F59E0B;"></div>
+                </div>
+                <div class="stat-percentage">${firePct}%</div>
+            </div>
+            <div class="stat-card stat-availability">
+                <div class="stat-header">
+                    <span class="stat-icon">🕐</span>
+                    <div>
+                        <div class="stat-number">${data.available_24_hours}</div>
+                        <div class="stat-label">24/7 Available</div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width: ${available24hPct}%; background: #10B981;"></div>
+                </div>
+                <div class="stat-percentage">${available24hPct}%</div>
             </div>
         `;
         
         document.getElementById('statsContainer').innerHTML = statsHTML;
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error loading statistics:', error);
+        document.getElementById('statsContainer').innerHTML = `
+            <div class="alert-custom alert-error">
+                <i class="fas fa-exclamation-circle"></i> Failed to load statistics
+            </div>
+        `;
     }
 }
 
@@ -595,6 +628,150 @@ function showAlert(message, type) {
     container.insertBefore(alertDiv, container.firstChild);
     
     setTimeout(() => alertDiv.remove(), 3500);
+}
+
+// Calculate and display route from user location to selected service
+async function getRouteToService(destLat, destLng, serviceName) {
+    // Check if user location is set
+    if (!userLocation || !userLocation.lat || !userLocation.lng) {
+        showAlert('Please set your location first', 'error');
+        return;
+    }
+    
+    showAlert('🗺️ Calculating route...', 'info');
+    
+    // Remove any existing route from map
+    if (routeLayer) {
+        map.removeLayer(routeLayer);
+        routeLayer = null;
+    }
+    
+    try {
+        // Use OSRM (Open Source Routing Machine) demo server for route calculation
+        // Format: start coordinates;end coordinates
+        const start = `${userLocation.lng},${userLocation.lat}`;
+        const end = `${destLng},${destLat}`;
+        
+        // Call OSRM API to get driving route
+        const url = `https://router.project-osrm.org/route/v1/driving/${start};${end}?overview=full&geometries=geojson`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+            const route = data.routes[0];
+            const geometry = route.geometry;
+            // Convert distance from meters to kilometers
+            const distance = (route.distance / 1000).toFixed(2);
+            // Convert duration from seconds to minutes
+            const duration = Math.round(route.duration / 60);
+            
+            // Convert GeoJSON coordinates [lng, lat] to Leaflet format [lat, lng]
+            const coordinates = geometry.coordinates.map(coord => [coord[1], coord[0]]);
+            
+            // Draw route as polyline on map
+            routeLayer = L.polyline(coordinates, {
+                color: '#FF385C',
+                weight: 5,
+                opacity: 0.8,
+                smoothFactor: 1
+            }).addTo(map);
+            
+            // Add popup with route information
+            routeLayer.bindPopup(`
+                <div style="text-align: center; padding: 8px;">
+                    <strong>Route to ${serviceName}</strong><br>
+                    <i class="fas fa-route"></i> Distance: <b>${distance} km</b><br>
+                    <i class="fas fa-clock"></i> Time: <b>~${duration} min</b>
+                </div>
+            `).openPopup();
+            
+            // Adjust map view to show entire route
+            map.fitBounds(routeLayer.getBounds(), { padding: [50, 50] });
+            
+            showAlert(`✓ Route calculated: ${distance} km (~${duration} min)`, 'success');
+        } else {
+            // If routing API fails, draw straight line as fallback
+            routeLayer = L.polyline([
+                [userLocation.lat, userLocation.lng],
+                [destLat, destLng]
+            ], {
+                color: '#FF385C',
+                weight: 4,
+                opacity: 0.6,
+                dashArray: '10, 10' // Dashed line to indicate it's not a real route
+            }).addTo(map);
+            
+            // Calculate straight-line distance using Haversine formula
+            const distance = calculateDistance(userLocation.lat, userLocation.lng, destLat, destLng);
+            routeLayer.bindPopup(`
+                <div style="text-align: center; padding: 8px;">
+                    <strong>Direct route to ${serviceName}</strong><br>
+                    <i class="fas fa-route"></i> Distance: <b>${distance.toFixed(2)} km</b><br>
+                    <small style="color: #767676;">(Straight line - routing unavailable)</small>
+                </div>
+            `).openPopup();
+            
+            showAlert(`✓ Direct route: ${distance.toFixed(2)} km`, 'success');
+        }
+    } catch (error) {
+        console.error('Route calculation error:', error);
+        
+        // If API call fails completely, draw straight line
+        routeLayer = L.polyline([
+            [userLocation.lat, userLocation.lng],
+            [destLat, destLng]
+        ], {
+            color: '#FF385C',
+            weight: 4,
+            opacity: 0.6,
+            dashArray: '10, 10'
+        }).addTo(map);
+        
+        const distance = calculateDistance(userLocation.lat, userLocation.lng, destLat, destLng);
+        showAlert(`✓ Direct route: ${distance.toFixed(2)} km (routing service unavailable)`, 'info');
+    }
+}
+
+// Calculate distance between two coordinates using Haversine formula
+// Returns distance in kilometers
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in kilometers
+    // Convert latitude difference to radians
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    // Convert longitude difference to radians
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    // Haversine formula: a = sin²(Δlat/2) + cos(lat1) × cos(lat2) × sin²(Δlon/2)
+    const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    // Calculate angular distance: c = 2 × atan2(√a, √(1−a))
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    // Distance = R × c
+    return R * c;
+}
+
+function clearRoute() {
+    if (routeLayer) {
+        map.removeLayer(routeLayer);
+        routeLayer = null;
+    }
+}
+
+function copyCoordinates() {
+    const coords = `${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`;
+    navigator.clipboard.writeText(coords).then(() => {
+        showAlert('✓ Coordinates copied to clipboard!', 'success');
+    }).catch(() => {
+        const textArea = document.createElement('textarea');
+        textArea.value = coords;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showAlert('✓ Coordinates copied to clipboard!', 'success');
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function() {

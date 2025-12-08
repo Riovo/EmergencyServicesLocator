@@ -1,29 +1,36 @@
+# Development Dockerfile - uses Django development server
 FROM python:3.11-slim
 
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
+# Python environment variables
+ENV PYTHONUNBUFFERED=1 # Don't buffer stdout/stderr
+ENV PYTHONDONTWRITEBYTECODE=1 # Don't create .pyc files
 
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies required for GeoDjango
+# GDAL and PROJ are needed for spatial data processing
 RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    gdal-bin \
-    libgdal-dev \
-    python3-gdal \
-    binutils \
-    libproj-dev \
-    && rm -rf /var/lib/apt/lists/*
+    postgresql-client \ # PostgreSQL client tools
+    gdal-bin \ # GDAL command-line tools
+    libgdal-dev \ # GDAL development libraries
+    python3-gdal \ # Python GDAL bindings
+    binutils \ # Binary utilities
+    libproj-dev \ # PROJ projection library
+    && rm -rf /var/lib/apt/lists/* # Clean up apt cache
 
-# Copy requirements and install Python dependencies
+# Copy requirements file and install Python packages
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
+# Copy application code
 COPY . /app/
 
+# Collect static files during build
 RUN python manage.py collectstatic --noinput || true
 
+# Expose port 8000 for Django development server
 EXPOSE 8000
 
+# Start Django development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

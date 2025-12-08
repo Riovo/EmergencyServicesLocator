@@ -1,0 +1,44 @@
+{
+  "name": "Emergency Services Locator - Dublin",
+  "short_name": "Emergency Locator",
+  "description": "Find the nearest hospitals, police stations, and fire stations in Dublin, Ireland",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FF385C",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["navigation", "utilities", "health"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Find Nearest Hospital",
+      "short_name": "Hospitals",
+      "description": "Quick access to find nearest hospitals",
+      "url": "/?type=hospital",
+      "icons": [{ "src": "/static/icons/icon-192x192.svg", "sizes": "192x192", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Find Nearest Police",
+      "short_name": "Police",
+      "description": "Quick access to find nearest police stations",
+      "url": "/?type=police",
+      "icons": [{ "src": "/static/icons/icon-192x192.svg", "sizes": "192x192", "type": "image/svg+xml" }]
+    }
+  ]
+}
+

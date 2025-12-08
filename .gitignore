@@ -18,10 +18,16 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 /static/
+/staticfiles/
+backend/staticfiles/
 /media/
+backend/logs/*.log
+!backend/logs/.gitkeep
 
 # Environment
 .env
+.env.local
+.env.production
 
 # IDE
 .vscode/

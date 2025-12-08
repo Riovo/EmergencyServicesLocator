@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: emergency_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres123}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgis_data:/var/lib/postgresql/data
@@ -23,8 +23,8 @@ services:
     image: dpage/pgadmin4:latest
     container_name: emergency_pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: C22375093@mytudublin.ie
-      PGADMIN_DEFAULT_PASSWORD: C22375093
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: change-me-in-production
       PGADMIN_LISTEN_PORT: 80
     ports:
       - "5050:80"
@@ -38,6 +38,7 @@ services:
     container_name: emergency_django
     command: >
       sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
              python manage.py loaddata services/fixtures/initial_data.json &&
              python create_superuser.py &&
              python manage.py runserver 0.0.0.0:8000"
@@ -46,13 +47,14 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_NAME=emergency_db
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=postgres123
-      - DATABASE_HOST=postgis
-      - DATABASE_PORT=5432
-      - DJANGO_SECRET_KEY=c22375093-emergency-services-secret-key-2024
-      - DEBUG=True
+      - DATABASE_NAME=${DATABASE_NAME:-emergency_db}
+      - DATABASE_USER=${DATABASE_USER:-postgres}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:-postgres123}
+      - DATABASE_HOST=${DATABASE_HOST:-postgis}
+      - DATABASE_PORT=${DATABASE_PORT:-5432}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-django-insecure-dev-key-change-in-production}
+      - DEBUG=${DEBUG:-True}
+      - OPENCAGE_API_KEY=${OPENCAGE_API_KEY:-}
     networks:
       - emergency_network
     depends_on:
@@ -66,7 +68,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./backend/static:/static:ro
+      - ./backend/staticfiles:/static:ro
     networks:
       - emergency_network
     depends_on:
