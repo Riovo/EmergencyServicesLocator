@@ -147,7 +147,7 @@ A location-based services (LBS) web application for finding emergency services (
 
 **This is a public repository.** Sensitive data (API keys, passwords, secret keys) should:
 - **Local Development**: Use `.env` file (create from template, never commit)
-- **Production**: Set in DigitalOcean App Platform dashboard as environment variables
+- **Production**: Set in Render dashboard as environment variables
 - **Never commit**: Actual API keys, passwords, or secret keys to this repository
 
 See [SECURITY.md](SECURITY.md) for detailed security guidelines.
@@ -301,26 +301,37 @@ Access at: http://localhost:8000
 
 ---
 
-## ☁️ Cloud Deployment (DigitalOcean App Platform)
+## ☁️ Cloud Deployment (Render)
 
-The application is ready for deployment to DigitalOcean App Platform with minimal configuration.
+The application is ready for deployment to Render with minimal configuration.
 
 ### Quick Deploy
 
 1. **Push code to GitHub** (if not already done)
-2. **Create DigitalOcean account** at [digitalocean.com](https://www.digitalocean.com)
-3. **Create new App** in DigitalOcean App Platform
+2. **Create Render account** at [render.com](https://render.com)
+3. **Create new Web Service** in Render
 4. **Connect GitHub repository**
 5. **Configure deployment**:
-   - **Dockerfile Path**: `backend/Dockerfile.prod`
-   - **Environment Variables**: See `DEPLOYMENT.md`
-6. **Add PostgreSQL database** component
-7. **Enable PostGIS extension** in database console
-8. **Deploy!**
+   - **Root Directory**: `backend`
+   - **Dockerfile Path**: `Dockerfile.prod`
+   - **Environment Variables**: See environment variables section below
+6. **Add PostgreSQL database** (Free tier available)
+7. **Deploy!**
 
-### Detailed Instructions
+### Environment Variables
 
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete step-by-step deployment guide, troubleshooting, and configuration details.
+Set these in Render's Environment Variables section:
+```
+DATABASE_NAME=<from-database-dashboard>
+DATABASE_USER=<from-database-dashboard>
+DATABASE_PASSWORD=<from-database-dashboard>
+DATABASE_HOST=<from-database-dashboard>
+DATABASE_PORT=5432
+DJANGO_SECRET_KEY=<generate-random-secret>
+DEBUG=False
+OPENCAGE_API_KEY=<your-api-key>
+ALLOWED_HOSTS=*
+```
 
 ### What's Included
 
@@ -333,8 +344,9 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete step-by-step deployment guid
 
 ### Cost
 
-- **Free Tier**: $0/month (development database)
-- **Production**: ~$20-27/month (production database + app)
+- **Free Tier**: $0/month (web service + PostgreSQL database)
+- **Limitations**: Web service spins down after 15 min inactivity (wakes up in ~30s)
+- **Database**: Free for 90 days, then $7/month
 
 ---
 
@@ -653,10 +665,10 @@ This section shows all improvements, new features, and enhancements made for CA2
 
 ---
 
-### Cloud Deployment on DigitalOcean
-![DigitalOcean Deployment](backend/screenshots/digitalocean-deployment.png)
+### Cloud Deployment on Render
+![Render Deployment](backend/screenshots/digitalocean-deployment.png)
 
-*Application deployed to DigitalOcean App Platform with production-ready configuration, automatic scaling, and managed PostgreSQL database*
+*Application deployed to Render with production-ready configuration, automatic deployments, and managed PostgreSQL database*
 
 ---
 
@@ -706,20 +718,18 @@ This section shows all improvements, new features, and enhancements made for CA2
 - Leaflet polyline rendering
 - Distance and duration calculations
 
-### 3. Cloud Deployment (DigitalOcean App Platform)
+### 3. Cloud Deployment (Render)
 - **Production-Ready**: Complete deployment configuration for cloud hosting
 - **Docker-Based**: Production Dockerfile with Gunicorn WSGI server
 - **Automated Deployment**: GitHub integration with auto-deploy on push
 - **Managed Database**: PostgreSQL with PostGIS extension support
 - **Environment Variables**: Secure configuration management
 - **Health Checks**: Automatic health monitoring and restart
-- **Scalability**: Easy horizontal scaling configuration
+- **Free Tier**: Free web service and database available
 
 **Deployment Files:**
 - `backend/Dockerfile.prod` - Production Docker image
 - `backend/start.sh` - Automated startup script
-- `app.yaml` - DigitalOcean App Platform configuration
-- `DEPLOYMENT.md` - Complete deployment guide
 
 ### 4. Enhanced User Interface
 - **Connection Status**: Real-time online/offline indicator in header
@@ -792,8 +802,8 @@ This section shows all improvements, new features, and enhancements made for CA2
 - **Environment Variables**: Secure environment variable management
 
 #### Cloud Platform
-- **DigitalOcean Integration**: Complete App Platform configuration
-- **Auto-scaling**: Configuration for horizontal scaling
+- **Render Integration**: Complete Render platform configuration
+- **Auto-deploy**: Automatic deployments on git push
 - **Health Monitoring**: Built-in health check endpoints
 - **CI/CD**: GitHub integration for automatic deployments
 
@@ -856,8 +866,6 @@ If you're upgrading from CA1 to CA2:
 - `backend/Dockerfile.prod` - Production Docker image
 - `backend/start.sh` - Production startup script
 - `backend/.dockerignore` - Docker build optimization
-- `app.yaml` - DigitalOcean App Platform configuration
-- `DEPLOYMENT.md` - Complete deployment documentation
 
 ### PWA Files
 - `backend/static/manifest.json` - PWA manifest
@@ -865,8 +873,6 @@ If you're upgrading from CA1 to CA2:
 - `backend/static/icons/` - PWA icon assets
 - `backend/static/icons/generate-icons.html` - Icon generator tool
 
-### Documentation
-- `DEPLOYMENT.md` - Step-by-step cloud deployment guide
 
 ---
 
@@ -874,7 +880,7 @@ If you're upgrading from CA1 to CA2:
 
 ### Technologies Mastered
 - **Progressive Web Apps (PWA)**: Service workers, manifests, offline capabilities
-- **Cloud Deployment**: DigitalOcean App Platform, production Docker configuration
+- **Cloud Deployment**: Render platform, production Docker configuration
 - **Route APIs**: OpenRouteService (OSRM) integration
 - **Production Servers**: Gunicorn WSGI server configuration
 - **DevOps**: CI/CD pipelines, automated deployments
@@ -890,11 +896,11 @@ If you're upgrading from CA1 to CA2:
 
 ## 🚀 CA2 Deployment Options
 
-### Option 1: DigitalOcean App Platform
+### Option 1: Render (Cloud Deployment)
 - **Difficulty**: Easy
 - **Cost**: Free tier available
-- **Setup Time**: 30-60 minutes
-- **Guide**: See [DEPLOYMENT.md](DEPLOYMENT.md)
+- **Setup Time**: 10-15 minutes
+- **Guide**: See "Cloud Deployment" section above
 
 ### Option 2: Local Docker (Development)
 - **Difficulty**: Very Easy
@@ -953,7 +959,7 @@ If you're upgrading from CA1 to CA2:
 - **Environment Variables**: Sensitive data moved to environment variables
 - **Production Settings**: DEBUG=False in production configuration
 - **Secret Key Management**: Secure secret key handling in cloud deployment
-- **HTTPS**: Automatic HTTPS with DigitalOcean App Platform
+- **HTTPS**: Automatic HTTPS with Render
 - **CORS Configuration**: Proper CORS settings for production
 
 ---
@@ -977,7 +983,7 @@ CA2 represents a significant evolution of the Emergency Services Locator applica
 ✅ **Production-Ready**: Complete production deployment configuration  
 ✅ **PWA Enabled**: Installable, offline-capable web application  
 ✅ **Route Navigation**: Interactive driving directions  
-✅ **Cloud Deployed**: Ready for DigitalOcean App Platform  
+✅ **Cloud Deployed**: Ready for Render platform  
 ✅ **Code Quality**: Polished, maintainable codebase  
 ✅ **User Experience**: Enhanced UI with better feedback  
 
