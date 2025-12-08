@@ -2,21 +2,23 @@
 FROM python:3.11-slim
 
 # Python environment variables
-ENV PYTHONUNBUFFERED=1 # Don't buffer stdout/stderr
-ENV PYTHONDONTWRITEBYTECODE=1 # Don't create .pyc files
+# Don't buffer stdout/stderr
+ENV PYTHONUNBUFFERED=1
+# Don't create .pyc files
+ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
 
 # Install system dependencies required for GeoDjango
 # GDAL and PROJ are needed for spatial data processing
 RUN apt-get update && apt-get install -y \
-    postgresql-client \ # PostgreSQL client tools
-    gdal-bin \ # GDAL command-line tools
-    libgdal-dev \ # GDAL development libraries
-    python3-gdal \ # Python GDAL bindings
-    binutils \ # Binary utilities
-    libproj-dev \ # PROJ projection library
-    && rm -rf /var/lib/apt/lists/* # Clean up apt cache
+    postgresql-client \
+    gdal-bin \
+    libgdal-dev \
+    python3-gdal \
+    binutils \
+    libproj-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements file and install Python packages
 COPY requirements.txt /app/
